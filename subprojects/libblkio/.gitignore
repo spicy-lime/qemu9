@@ -1,0 +1,4 @@
+.cargo/
+build/
+target/
+/test-image.qcow2
