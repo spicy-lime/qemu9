@@ -115,7 +115,7 @@ if get_option('fuzzing') and get_option('fuzzing_engine') == '' and \
           int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size);
           int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) { return 0; }
         ''',
-        args: ['-Werror', '-fsanitize=fuzzer'])
+        args: ['-fsanitize=fuzzer'])
   error('Your compiler does not support -fsanitize=fuzzer')
 endif
 
@@ -373,8 +373,8 @@ if not get_option('stack_protector').disabled()
   foreach arg : ['-fstack-protector-strong', '-fstack-protector-all']
     # We need to check both a compile and a link, since some compiler
     # setups fail only on a .c->.o compile and some only at link time
-    if cc.compiles(stack_protector_probe, args: ['-Werror', arg]) and \
-       cc.links(stack_protector_probe, args: ['-Werror', arg])
+    if cc.compiles(stack_protector_probe, args: [arg]) and \
+       cc.links(stack_protector_probe, args: [arg])
       have_stack_protector = true
       qemu_cflags += arg
       qemu_ldflags += arg
@@ -921,7 +921,7 @@ if not cc.compiles('''
     g_free(f);
   }
   G_DEFINE_AUTOPTR_CLEANUP_FUNC(Foo, foo_free)
-  int main(void) { return 0; }''', dependencies: glib_pc, args: ['-Wunused-function', '-Werror'])
+  int main(void) { return 0; }''', dependencies: glib_pc, args: ['-Wunused-function'])
   glib_cflags += cc.get_supported_arguments('-Wno-unused-function')
 endif
 glib = declare_dependency(dependencies: [glib_pc, gmodule],
@@ -1411,7 +1411,7 @@ if sdl.found()
                      #include <SDL.h>
                      #include <SDL_syswm.h>
                      int main(int argc, char *argv[]) { return 0; }
-                     ''', dependencies: sdl, args: '-Werror=undef')
+                     ''', dependencies: sdl, args: '-Wno-error')
     sdl = declare_dependency(compile_args: '-Wno-undef',
                              dependencies: sdl,
                              version: sdl.version())
@@ -2662,7 +2662,7 @@ config_host_data.set('HAVE_BROKEN_SIZE_MAX', not cc.compiles('''
     #include <stdio.h>
     int main(void) {
         return printf("%zu", SIZE_MAX);
-    }''', args: ['-Werror']))
+    }''', args: ['-Wno-error']))
 
 # See if 64-bit atomic operations are supported.
 # Note that without __atomic builtins, we can only
